@@ -6,4 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".MovieDetailActivity">
 
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAllCaps="false"
+        android:textSize="22sp"
+        android:gravity="center"
+        tools:text="Test"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

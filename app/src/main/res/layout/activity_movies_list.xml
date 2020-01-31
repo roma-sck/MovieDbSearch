@@ -7,13 +7,24 @@
     tools:context=".MoviesListActivity">
 
     <TextView
-        android:id="@+id/goToDetail"
-        android:layout_width="wrap_content"
+        android:id="@+id/emptyListText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to detail"
+        android:layout_gravity="center"
+        android:textAllCaps="false"
+        android:textSize="22sp"
+        android:gravity="center"
+        android:text="@string/empty_search_list_text"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/moviesList"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/moviesList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/movie_list_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
