@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MoviesListActivity">
+    tools:context=".screens.list.MoviesListActivity">
 
     <TextView
         android:id="@+id/emptyListText"
@@ -15,6 +15,7 @@
         android:textSize="22sp"
         android:gravity="center"
         android:text="@string/empty_search_list_text"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/moviesList"
         app:layout_constraintStart_toStartOf="parent"

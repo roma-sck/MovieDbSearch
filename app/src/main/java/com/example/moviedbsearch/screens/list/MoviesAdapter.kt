@@ -1,10 +1,11 @@
-package com.example.moviedbsearch
+package com.example.moviedbsearch.screens.list
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.moviedbsearch.R
 import com.example.moviedbsearch.api.ApiConstants
 import com.example.moviedbsearch.models.MovieInfo
 import kotlinx.android.synthetic.main.movie_list_item.view.*

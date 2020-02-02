@@ -1,7 +1,8 @@
-package com.example.moviedbsearch
+package com.example.moviedbsearch.screens.details
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.moviedbsearch.R
 import com.example.moviedbsearch.models.MovieInfo
 import kotlinx.android.synthetic.main.activity_movie_detail.*
 

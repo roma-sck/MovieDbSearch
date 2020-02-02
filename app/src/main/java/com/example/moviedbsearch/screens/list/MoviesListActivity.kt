@@ -1,10 +1,12 @@
-package com.example.moviedbsearch
+package com.example.moviedbsearch.screens.list
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import com.example.moviedbsearch.BuildConfig
+import com.example.moviedbsearch.FakeData
+import com.example.moviedbsearch.screens.details.MovieDetailActivity
+import com.example.moviedbsearch.R
 import com.example.moviedbsearch.api.MoviesApiService
 import com.example.moviedbsearch.extensions.beVisibleIf
 import com.example.moviedbsearch.models.MovieInfo
@@ -31,6 +33,7 @@ class MoviesListActivity : AppCompatActivity() {
     private fun loadMovies() {
         scopeUi.launch {
             showLoader()
+            
             val apiResponse = withContext(Dispatchers.IO) {
                 MoviesApiService().getMovies(
                     null,
@@ -43,6 +46,7 @@ class MoviesListActivity : AppCompatActivity() {
                 )
             }
             initAdapter(apiResponse)
+
             hideLoader()
         }
     }
@@ -79,7 +83,10 @@ class MoviesListActivity : AppCompatActivity() {
 
     private fun showError(throwable: Throwable) {
         if (BuildConfig.DEBUG) throwable.printStackTrace()
-        alert(R.string.general_error_message, R.string.error) {
+        alert(
+            R.string.general_error_message,
+            R.string.error
+        ) {
             okButton {  }
         }.show()
     }
