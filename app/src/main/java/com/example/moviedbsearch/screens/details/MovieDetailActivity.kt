@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.moviedbsearch.R
 import com.example.moviedbsearch.models.MovieInfo
+import com.example.moviedbsearch.utils.ExtraNames
 import kotlinx.android.synthetic.main.activity_movie_detail.*
 
 class MovieDetailActivity : AppCompatActivity() {
@@ -12,7 +13,7 @@ class MovieDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_detail)
 
-        (intent.getSerializableExtra("MOVIE_INFO") as? MovieInfo)?.let {
+        (intent?.getSerializableExtra(ExtraNames.EXTRA_MOVIE_INFO) as? MovieInfo)?.let {
             updateUi(it)
         }
     }

@@ -11,7 +11,7 @@ import com.example.moviedbsearch.models.MovieInfo
 import kotlinx.android.synthetic.main.movie_list_item.view.*
 
 class MoviesAdapter(
-    private val movies: List<MovieInfo>,
+    internal var movies: List<MovieInfo>,
     private val onItemClick: (MovieInfo) -> Unit
 ) : RecyclerView.Adapter<MoviesAdapter.VH>() {
 

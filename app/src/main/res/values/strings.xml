@@ -3,4 +3,11 @@
     <string name="empty_search_list_text">It\'s empty here,\n please try another search params\n or try again later</string>
     <string name="error">Error</string>
     <string name="general_error_message">Suddenly, something unexpected happened</string>
+    <string name="find_your_favourite_movies">Find your favourite movies</string>
+    <string name="search_by">Search by…</string>
+    <string name="movie_title">Movie title</string>
+    <string name="actor_name">Actor name</string>
+    <string name="director_name">Director name</string>
+    <string name="show_adult_in_search_results">Show adult in search results</string>
+    <string name="start_search">Start search</string>
 </resources>
