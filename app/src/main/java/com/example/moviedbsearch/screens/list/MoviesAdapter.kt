@@ -33,7 +33,7 @@ class MoviesAdapter(
 
         fun bind(item: MovieInfo) {
             itemView.movieTitle.text = item.title
-            itemView.movieYear.text = item.release_date
+            itemView.movieYear.text = item.release_date.substring(0, 4)
             val posterUrl = ApiConstants.THE_MOVIES_DB_IMAGE_BASE_URL_WITH_SIZE + item.poster_path
             Glide.with(itemView.context)
                 .load(posterUrl)

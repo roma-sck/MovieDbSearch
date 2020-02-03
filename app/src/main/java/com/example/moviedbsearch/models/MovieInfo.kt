@@ -14,7 +14,7 @@ data class MovieInfo(
     val original_title: String = "",
     val genre_ids: List<Int> = listOf(),
     val title: String = "",
-    val vote_average: Double = 0.0,
+    val vote_average: Float = 0.0f,
     val overview: String = "",
     val release_date: String = ""
 ) : Serializable

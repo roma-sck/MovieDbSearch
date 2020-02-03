@@ -26,6 +26,8 @@ class MoviesApiService {
             .create(MoviesService::class.java)
     }
 
+    suspend fun getMoviesGenres() = webService.getMoviesGenres()
+
     suspend fun getMovies(
         page: Int?,
         year: Int?,

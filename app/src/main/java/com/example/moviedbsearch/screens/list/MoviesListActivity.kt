@@ -1,32 +1,25 @@
 package com.example.moviedbsearch.screens.list
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.moviedbsearch.BuildConfig
-import com.example.moviedbsearch.FakeData
 import com.example.moviedbsearch.screens.details.MovieDetailActivity
 import com.example.moviedbsearch.R
-import com.example.moviedbsearch.api.MoviesApiService
+import com.example.moviedbsearch.extensions.beGone
+import com.example.moviedbsearch.extensions.beVisible
 import com.example.moviedbsearch.extensions.beVisibleIf
 import com.example.moviedbsearch.models.MovieInfo
 import com.example.moviedbsearch.models.MoviesResponse
+import com.example.moviedbsearch.screens.base.BaseActivity
 import com.example.moviedbsearch.utils.ExtraNames
 import com.example.moviedbsearch.utils.LoadMoreScrollListener
-import com.example.moviedbsearch.utils.MoviesDiffUtilCallback
 import kotlinx.android.synthetic.main.activity_movies_list.*
 import kotlinx.coroutines.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.okButton
 
-class MoviesListActivity : AppCompatActivity() {
-    private val job = SupervisorJob()
-    private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        handleError(throwable)
-    }
-    private val scopeUi = CoroutineScope(Dispatchers.Main + job + errorHandler)
+class MoviesListActivity : BaseActivity() {
     private lateinit var adapter: MoviesAdapter
     private var pageToLoad: Int? = null
     private var searchYear: Int? = null
@@ -35,13 +28,14 @@ class MoviesListActivity : AppCompatActivity() {
     private var searcActorName: String? = null
     private var searchDirectorName: String? = null
     private var searchShowAdult: Boolean? = null
+    private var canLoadMore = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movies_list)
-        overridePendingTransition(R.anim.slide_up,  R.anim.slide_down)
         initSearchParams()
-        loadMovies()
+        initMoviesAdapter()
+        loadMovies(true)
         initListeners()
     }
 
@@ -54,12 +48,14 @@ class MoviesListActivity : AppCompatActivity() {
         searchShowAdult = intent?.getBooleanExtra(ExtraNames.EXTRA_SEARCH_SHOW_ADULT, false)
     }
 
-    private fun loadMovies() {
+    private fun loadMovies(initialLoading: Boolean) {
+        if (!canLoadMore) return
         scopeUi.launch {
-            showLoader()
+            if (initialLoading) showLoader()
+            else loadMoreProgressBar.beVisible()
             
             val apiResponse = withContext(Dispatchers.IO) {
-                MoviesApiService().getMovies(
+                moviesApiService.getMovies(
                     pageToLoad,
                     if (searchYear != 0) searchYear else null,
                     if (!title.isNullOrEmpty()) "original_title.desc" else null,
@@ -70,70 +66,56 @@ class MoviesListActivity : AppCompatActivity() {
                 )
             }
             pageToLoad = apiResponse.page + 1
-            initMoviesAdapter(apiResponse)
+            updateMoviesList(apiResponse)
 
-            hideLoader()
+            if (initialLoading) hideLoader()
+            else loadMoreProgressBar.beGone()
         }
     }
 
     private fun initListeners() {
         moviesList.addOnScrollListener(
             LoadMoreScrollListener(
-                { loadMovies() },
+                { loadMovies(false) },
                 moviesList.layoutManager as LinearLayoutManager
             )
         )
     }
 
-    private fun initMoviesAdapter(response: MoviesResponse?) {
-        adapter = MoviesAdapter(
-            response?.results.orEmpty()
-        ) { openMovieDetails(it) }
+    private fun initMoviesAdapter() {
+        adapter = MoviesAdapter(emptyList()) { openMovieDetails(it) }
+        moviesList.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
         moviesList.adapter = adapter
-        val itemsExist = adapter.itemCount > 0
-        moviesList.beVisibleIf(itemsExist)
-        emptyListText.beVisibleIf(!itemsExist)
     }
 
-    private fun updateMoviesList(list: List<MovieInfo>) {
-        val diffUtilCallback = MoviesDiffUtilCallback(adapter.movies, list)
+    @SuppressLint("DefaultLocale")
+    private fun updateMoviesList(response: MoviesResponse) {
+        val list = if (searchTitle.isNullOrEmpty()) {
+            response.results
+        } else {
+            response.results.filter { it.title.toLowerCase().contains(searchTitle!!.toLowerCase()) }
+        }
+        val diffUtilCallback =
+            MoviesDiffUtilCallback(
+                adapter.movies,
+                list
+            )
         val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
         adapter.movies = list.toMutableList()
         diffResult.dispatchUpdatesTo(adapter)
+
+        val itemsExist = adapter.itemCount > 0
+        moviesList.beVisibleIf(itemsExist)
+        emptyListText.beVisibleIf(!itemsExist)
+
+        canLoadMore = response.total_pages > (response.page + 1)
     }
 
     private fun openMovieDetails(info: MovieInfo) {
         Intent(this, MovieDetailActivity::class.java).apply {
             putExtra(ExtraNames.EXTRA_MOVIE_INFO, info)
             startActivity(this)
+            overridePendingTransition(R.anim.slide_up,  R.anim.slide_down)
         }
-    }
-
-    private fun showLoader() {
-
-    }
-
-    private fun hideLoader() {
-
-    }
-
-    private fun handleError(throwable: Throwable) {
-        hideLoader()
-        showError(throwable)
-    }
-
-    private fun showError(throwable: Throwable) {
-        if (BuildConfig.DEBUG) throwable.printStackTrace()
-        alert(
-            R.string.general_error_message,
-            R.string.error
-        ) {
-            okButton {  }
-        }.show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        scopeUi.coroutineContext.cancelChildren()
     }
 }

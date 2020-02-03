@@ -1,4 +1,4 @@
-package com.example.moviedbsearch.utils
+package com.example.moviedbsearch.screens.list
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.moviedbsearch.models.MovieInfo
