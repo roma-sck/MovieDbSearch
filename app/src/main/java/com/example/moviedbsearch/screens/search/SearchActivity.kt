@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import com.example.moviedbsearch.R
 import com.example.moviedbsearch.extensions.afterTextChanged
 import com.example.moviedbsearch.models.Genre
+import com.example.moviedbsearch.models.PersonInfo
 import com.example.moviedbsearch.screens.base.BaseActivity
 import com.example.moviedbsearch.screens.list.MoviesListActivity
 import com.example.moviedbsearch.utils.ExtraNames
@@ -23,12 +24,17 @@ import kotlin.collections.ArrayList
 class SearchActivity : BaseActivity() {
     private var searchYear: Int? = null
     private var searchGenres = mutableListOf<Int>()
+    private var personsSearchPage: Int? = null
+    private var searchPersons = mutableListOf<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        if ((Hawk.get(PreferenceData.MOVIES_GENRES) as? List<Genre>).isNullOrEmpty()) {
+        if (Hawk.get<List<Genre>>(PreferenceData.MOVIES_GENRES).isNullOrEmpty()) {
             loadGenres()
+        }
+        if (Hawk.get<List<PersonInfo>>(PreferenceData.POPULAR_PERSONS).isNullOrEmpty()) {
+            loadPopularPersons()
         }
         initUi()
         initListeners()
@@ -37,6 +43,7 @@ class SearchActivity : BaseActivity() {
     private fun initUi() {
         initYearAdapter()
         initGenresSpinner()
+        initPersonsSpinner()
         checkFilledFields()
     }
 
@@ -58,11 +65,35 @@ class SearchActivity : BaseActivity() {
     }
 
     private fun loadGenres() {
-        scopeUi.launch {
+        scopeUiSilent.launch {
             val apiResponse = withContext(Dispatchers.IO) {
                 moviesApiService.getMoviesGenres()
             }
             Hawk.put(PreferenceData.MOVIES_GENRES, apiResponse.genres)
+            initGenresSpinner()
+        }
+    }
+
+    private fun loadPopularPersons() {
+        scopeUiSilent.launch {
+            val firstApiResponse = withContext(Dispatchers.IO) {
+                moviesApiService.getPopularPersons(null)
+            }
+            Hawk.put(PreferenceData.POPULAR_PERSONS, firstApiResponse.results)
+            val currentPage = firstApiResponse.page
+            personsSearchPage = currentPage + 1
+            val totalPages = firstApiResponse.total_pages
+            if (totalPages > currentPage) {
+                for (page in (currentPage + 1)..(if (totalPages <= 10) totalPages else 10)) {
+                    val apiResponse = withContext(Dispatchers.IO) {
+                        moviesApiService.getPopularPersons(personsSearchPage)
+                    }
+                    val persons = Hawk.get<List<PersonInfo>>(PreferenceData.POPULAR_PERSONS).orEmpty().toMutableList()
+                    persons.addAll(apiResponse.results)
+                    Hawk.put(PreferenceData.POPULAR_PERSONS, persons)
+                }
+            }
+            initPersonsSpinner()
         }
     }
 
@@ -87,7 +118,7 @@ class SearchActivity : BaseActivity() {
     }
 
     private fun initGenresSpinner() {
-        val genres = (Hawk.get(PreferenceData.MOVIES_GENRES) as? List<Genre>).orEmpty()
+        val genres = Hawk.get<List<Genre>>(PreferenceData.MOVIES_GENRES).orEmpty()
         val adapter =
             ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, genres.map { it.name })
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -101,6 +132,27 @@ class SearchActivity : BaseActivity() {
                     searchGenres.add(genres[position].id)
                 } else {
                     searchGenres.clear()
+                }
+                checkFilledFields()
+            }
+        }
+    }
+
+    private fun initPersonsSpinner() {
+        val persons = Hawk.get<List<PersonInfo>>(PreferenceData.POPULAR_PERSONS).orEmpty()
+        val adapter =
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, persons.map { it.name })
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        personsSpinner.adapter = adapter
+        personsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+
+            override fun onItemSelected(p: AdapterView<*>, view: View, position: Int, id: Long) {
+                if (position != -1) {
+                    searchPersons.add(persons[position].id)
+                } else {
+                    searchPersons.clear()
                 }
                 checkFilledFields()
             }

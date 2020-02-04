@@ -75,6 +75,16 @@
         app:layout_constraintTop_toBottomOf="@+id/editTitle"
         app:ms_hint="Genres" />
 
+    <fr.ganfra.materialspinner.MaterialSpinner
+        android:id="@+id/personsSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/genresSpinner"
+        app:ms_hint="Persons" />
+
     <EditText
         android:id="@+id/editActorName"
         android:layout_width="match_parent"
@@ -82,7 +92,7 @@
         android:layout_margin="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/genresSpinner"
+        app:layout_constraintTop_toBottomOf="@+id/personsSpinner"
         android:hint="@string/actor_name"
         android:inputType="textAutoComplete|textAutoCorrect|textCapWords"
         android:maxLines="2"

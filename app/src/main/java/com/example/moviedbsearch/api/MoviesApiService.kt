@@ -28,6 +28,10 @@ class MoviesApiService {
 
     suspend fun getMoviesGenres() = webService.getMoviesGenres()
 
+    suspend fun getPopularPersons(
+        page: Int?
+    ) = webService.getPopularPersons(page)
+
     suspend fun getMovies(
         page: Int?,
         year: Int?,

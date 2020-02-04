@@ -17,6 +17,8 @@ abstract class BaseActivity : AppCompatActivity() {
     private val job = SupervisorJob()
     private val errorHandler = CoroutineExceptionHandler { _, throwable -> handleError(throwable) }
     protected val scopeUi = CoroutineScope(Dispatchers.Main + job + errorHandler)
+    private val errorHandlerSilent = CoroutineExceptionHandler { _, throwable -> handleSilentError(throwable) }
+    protected val scopeUiSilent = CoroutineScope(Dispatchers.Main + job + errorHandlerSilent)
     protected lateinit var moviesApiService: MoviesApiService
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,8 +42,12 @@ abstract class BaseActivity : AppCompatActivity() {
         showError(throwable)
     }
 
+    private fun handleSilentError(throwable: Throwable) {
+        logError(throwable)
+    }
+
     private fun showError(throwable: Throwable) {
-        if (BuildConfig.DEBUG) throwable.printStackTrace()
+        logError(throwable)
         alert(
             R.string.general_error_message,
             R.string.error
@@ -53,5 +59,9 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         scopeUi.coroutineContext.cancelChildren()
+    }
+
+    private fun logError(throwable: Throwable) {
+        if (BuildConfig.DEBUG) throwable.printStackTrace()
     }
 }
