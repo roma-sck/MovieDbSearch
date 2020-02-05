@@ -81,7 +81,7 @@ class SearchActivity : BaseActivity() {
             val apiResponse = withContext(Dispatchers.IO) {
                 moviesApiService.getMoviesGenres()
             }
-            saveGenresList(apiResponse.genres)
+            saveGenresList(apiResponse.genres.toHashSet())
             initGenresSpinner()
         }
     }
@@ -91,7 +91,7 @@ class SearchActivity : BaseActivity() {
             val firstApiResponse = withContext(Dispatchers.IO) {
                 moviesApiService.getPopularPersons(null)
             }
-            savePersonsList(firstApiResponse.results)
+            savePersonsList(firstApiResponse.results.toHashSet())
             val currentPage = firstApiResponse.page
             personsSearchPage = currentPage + 1
             val totalPages = firstApiResponse.total_pages
@@ -102,7 +102,7 @@ class SearchActivity : BaseActivity() {
                     }
                     val persons = getPersonsList().toMutableList()
                     persons.addAll(apiResponse.results)
-                    savePersonsList(persons)
+                    savePersonsList(persons.toHashSet())
                 }
             }
             initCrewMembersSpinner()
@@ -131,8 +131,8 @@ class SearchActivity : BaseActivity() {
         val genres = getGenresList()
         for (i in genres.indices) {
             val data = KeyPairBoolData()
-            data.id = genres[i].id.toLong()
-            data.name = genres[i].name
+            data.id = genres.toList()[i].id.toLong()
+            data.name = genres.toList()[i].name
             data.isSelected = false
             genresData.add(data)
         }
@@ -149,8 +149,8 @@ class SearchActivity : BaseActivity() {
         val persons = getPersonsList()
         for (i in persons.indices) {
             val data = KeyPairBoolData()
-            data.id = persons[i].id.toLong()
-            data.name = persons[i].name
+            data.id = persons.toList()[i].id.toLong()
+            data.name = persons.toList()[i].name
             data.isSelected = false
             personsData.add(data)
         }
@@ -186,19 +186,19 @@ class SearchActivity : BaseActivity() {
         search.alpha = if (isSearchFieldsFilled) 1f else 0.5f
     }
 
-    private fun getGenresList(): List<Genre> {
-        return Hawk.get<List<Genre>>(PreferenceData.MOVIES_GENRES).orEmpty()
+    private fun getGenresList(): Set<Genre> {
+        return Hawk.get<Set<Genre>>(PreferenceData.MOVIES_GENRES).orEmpty()
     }
 
-    private fun saveGenresList(list: List<Genre>) {
-        Hawk.put(PreferenceData.MOVIES_GENRES, list)
+    private fun saveGenresList(set: Set<Genre>) {
+        Hawk.put(PreferenceData.MOVIES_GENRES, set)
     }
 
-    private fun getPersonsList(): List<PersonInfo> {
-        return Hawk.get<List<PersonInfo>>(PreferenceData.POPULAR_PERSONS).orEmpty()
+    private fun getPersonsList(): Set<PersonInfo> {
+        return Hawk.get<Set<PersonInfo>>(PreferenceData.POPULAR_PERSONS).orEmpty()
     }
 
-    private fun savePersonsList(list: List<PersonInfo>) {
-        Hawk.put(PreferenceData.POPULAR_PERSONS, list)
+    private fun savePersonsList(set: Set<PersonInfo>) {
+        Hawk.put(PreferenceData.POPULAR_PERSONS, set)
     }
 }
