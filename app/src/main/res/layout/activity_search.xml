@@ -14,7 +14,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/header_height"
             android:background="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
         <TextView
             android:id="@+id/header"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/header_height"
             android:background="@color/black"
             android:drawableStart="@drawable/ic_the_movie_db"
             android:drawablePadding="10dp"
@@ -59,20 +59,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/header" />
 
-        <EditText
-            android:id="@+id/editTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:hint="@string/movie_title"
-            android:inputType="textAutoComplete|textAutoCorrect|textCapSentences"
-            android:maxLines="2"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/findBy"
-            tools:ignore="Autofill" />
-
         <TextView
             android:id="@+id/searchByYear"
             android:layout_width="wrap_content"
@@ -82,7 +68,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/findBy" />
 
         <com.androidbuts.multispinnerfilter.SingleSpinner
             android:id="@+id/yearSpinner"
@@ -161,6 +147,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchByActors" />
 
+        <EditText
+            android:id="@+id/editTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:hint="@string/movie_title"
+            android:inputType="textAutoComplete|textAutoCorrect|textCapSentences"
+            android:maxLines="2"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/actorsMultiSpinner"
+            tools:ignore="Autofill" />
+
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/showAdultCheckbox"
             android:layout_width="wrap_content"
@@ -169,7 +169,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/actorsMultiSpinner" />
+            app:layout_constraintTop_toBottomOf="@+id/editTitle" />
 
         <TextView
             android:id="@+id/showAdultInfoHint"

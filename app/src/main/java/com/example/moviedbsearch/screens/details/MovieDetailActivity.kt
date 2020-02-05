@@ -11,6 +11,7 @@ import com.example.moviedbsearch.models.MovieInfo
 import com.example.moviedbsearch.screens.base.BaseActivity
 import com.example.moviedbsearch.utils.ExtraNames
 import kotlinx.android.synthetic.main.activity_movie_detail.*
+import kotlinx.android.synthetic.main.activity_movie_detail.header
 
 class MovieDetailActivity : BaseActivity() {
 
@@ -20,6 +21,7 @@ class MovieDetailActivity : BaseActivity() {
         (intent?.getSerializableExtra(ExtraNames.EXTRA_MOVIE_INFO) as? MovieInfo)?.let {
             updateUi(it)
         }
+        initListeners()
     }
 
     private fun updateUi(movie: MovieInfo) {
@@ -41,6 +43,12 @@ class MovieDetailActivity : BaseActivity() {
         openInWeb.setOnClickListener {
             val url = ApiConstants.THE_MOVIES_DB_BASE_OPEN_WEB_URL + movie.id
             openInBrowser(url)
+        }
+    }
+
+    private fun initListeners() {
+        header.setOnClickListener {
+            onBackPressed()
         }
     }
 

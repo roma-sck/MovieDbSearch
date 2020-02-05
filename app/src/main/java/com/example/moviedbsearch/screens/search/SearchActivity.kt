@@ -46,14 +46,10 @@ class SearchActivity : BaseActivity() {
     private fun initListeners() {
         editTitle.afterTextChanged { checkFilledFields() }
         search.setOnClickListener {
-            Intent(this, MoviesListActivity::class.java).apply {
-                putExtra(ExtraNames.EXTRA_SEARCH_YEAR, searchYear)
-                putIntegerArrayListExtra(ExtraNames.EXTRA_SEARCH_GENRES, searchGenres as? ArrayList)
-                putExtra(ExtraNames.EXTRA_SEARCH_TITLE, editTitle.text.toString())
-                putIntegerArrayListExtra(ExtraNames.EXTRA_SEARCH_ACTORS, searchActorsIds as? ArrayList)
-                putIntegerArrayListExtra(ExtraNames.EXTRA_SEARCH_CREW_MEMBERS, searchCrewMembersIds as? ArrayList)
-                putExtra(ExtraNames.EXTRA_SEARCH_SHOW_ADULT, showAdultCheckbox.isChecked)
-                startActivity(this)
+            if (connectedToInternet) {
+                startSearchByParams()
+            } else {
+                showErrorMessage(R.string.error_no_internet_connection)
             }
         }
         clearAllFields.setOnClickListener {
@@ -65,6 +61,18 @@ class SearchActivity : BaseActivity() {
             editTitle.text.clear()
             showAdultCheckbox.isChecked = false
             initUi()
+        }
+    }
+
+    private fun startSearchByParams() {
+        Intent(this, MoviesListActivity::class.java).apply {
+            putExtra(ExtraNames.EXTRA_SEARCH_YEAR, searchYear)
+            putIntegerArrayListExtra(ExtraNames.EXTRA_SEARCH_GENRES, searchGenres as? ArrayList)
+            putExtra(ExtraNames.EXTRA_SEARCH_TITLE, editTitle.text.toString())
+            putIntegerArrayListExtra(ExtraNames.EXTRA_SEARCH_ACTORS, searchActorsIds as? ArrayList)
+            putIntegerArrayListExtra(ExtraNames.EXTRA_SEARCH_CREW_MEMBERS, searchCrewMembersIds as? ArrayList)
+            putExtra(ExtraNames.EXTRA_SEARCH_SHOW_ADULT, showAdultCheckbox.isChecked)
+            startActivity(this)
         }
     }
 

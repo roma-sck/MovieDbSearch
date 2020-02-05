@@ -7,6 +7,7 @@ import com.example.moviedbsearch.R
 import com.example.moviedbsearch.api.MoviesApiService
 import com.example.moviedbsearch.extensions.beGone
 import com.example.moviedbsearch.extensions.beVisible
+import com.novoda.merlin.Merlin
 import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_movies_list.*
 import kotlinx.coroutines.*
@@ -20,12 +21,33 @@ abstract class BaseActivity : AppCompatActivity() {
     private val errorHandlerSilent = CoroutineExceptionHandler { _, throwable -> handleSilentError(throwable) }
     protected val scopeUiSilent = CoroutineScope(Dispatchers.Main + job + errorHandlerSilent)
     protected lateinit var moviesApiService: MoviesApiService
+    private lateinit var merlin: Merlin
+    protected var connectedToInternet = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         overridePendingTransition(R.anim.slide_up,  R.anim.slide_down)
+        initInstances()
+    }
+
+    private fun initInstances() {
+        merlin = Merlin.Builder().withConnectableCallbacks().withDisconnectableCallbacks().build(this)
+        merlin.apply {
+            registerConnectable { connectedToInternet = true }
+            registerDisconnectable { connectedToInternet = false }
+        }
         moviesApiService = MoviesApiService()
         Hawk.init(this).build()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        merlin.bind()
+    }
+
+    override fun onPause() {
+        merlin.unbind()
+        super.onPause()
     }
 
     protected fun showLoader() {
@@ -39,17 +61,17 @@ abstract class BaseActivity : AppCompatActivity() {
     private fun handleError(throwable: Throwable) {
         hideLoader()
         loadMoreProgressBar?.beGone()
-        showError(throwable)
+        logError(throwable)
+        showErrorMessage(R.string.general_error_message)
     }
 
     private fun handleSilentError(throwable: Throwable) {
         logError(throwable)
     }
 
-    private fun showError(throwable: Throwable) {
-        logError(throwable)
+    protected fun showErrorMessage(errorMessage: Int) {
         alert(
-            R.string.general_error_message,
+            errorMessage,
             R.string.error
         ) {
             okButton {  }

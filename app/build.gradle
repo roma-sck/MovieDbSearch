@@ -43,4 +43,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.orhanobut:hawk:2.0.1'
     implementation 'com.github.pratikbutani:MultiSelectSpinner:-SNAPSHOT'
+    implementation 'com.novoda:merlin:1.2.0'
 }

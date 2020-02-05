@@ -23,4 +23,7 @@
     <string name="find_genre">Find genre</string>
     <string name="clear_all_fields">Clear all fields</string>
     <string name="not_selected">Not selected</string>
+    <string name="error_no_internet_connection">Please check your internet connection and try again.</string>
+    <string name="search_results">Search results</string>
+    <string name="movie_details">Movie details</string>
 </resources>
