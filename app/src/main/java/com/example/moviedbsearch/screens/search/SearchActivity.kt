@@ -2,9 +2,7 @@ package com.example.moviedbsearch.screens.search
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import com.androidbuts.multispinnerfilter.KeyPairBoolData
 import com.example.moviedbsearch.R
 import com.example.moviedbsearch.extensions.afterTextChanged
 import com.example.moviedbsearch.models.Genre
@@ -23,19 +21,16 @@ import kotlin.collections.ArrayList
 
 class SearchActivity : BaseActivity() {
     private var searchYear: Int? = null
-    private var searchGenres = mutableListOf<Int>()
+    private var searchGenres = listOf<Int>()
     private var personsSearchPage: Int? = null
-    private var searchPersons = mutableListOf<Int>()
+    private var searchCrewMembersIds = listOf<Int>()
+    private var searchActorsIds = listOf<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        if (Hawk.get<List<Genre>>(PreferenceData.MOVIES_GENRES).isNullOrEmpty()) {
-            loadGenres()
-        }
-        if (Hawk.get<List<PersonInfo>>(PreferenceData.POPULAR_PERSONS).isNullOrEmpty()) {
-            loadPopularPersons()
-        }
+        if (getGenresList().isNullOrEmpty()) loadGenres()
+        if (getPersonsList().isNullOrEmpty()) loadPopularPersons()
         initUi()
         initListeners()
     }
@@ -43,24 +38,33 @@ class SearchActivity : BaseActivity() {
     private fun initUi() {
         initYearAdapter()
         initGenresSpinner()
-        initPersonsSpinner()
+        initCrewMembersSpinner()
+        initActorsSpinner()
         checkFilledFields()
     }
 
     private fun initListeners() {
         editTitle.afterTextChanged { checkFilledFields() }
-        editActorName.afterTextChanged { checkFilledFields() }
-        ediDirectorName.afterTextChanged { checkFilledFields() }
         search.setOnClickListener {
             Intent(this, MoviesListActivity::class.java).apply {
                 putExtra(ExtraNames.EXTRA_SEARCH_YEAR, searchYear)
+                putIntegerArrayListExtra(ExtraNames.EXTRA_SEARCH_GENRES, searchGenres as? ArrayList)
                 putExtra(ExtraNames.EXTRA_SEARCH_TITLE, editTitle.text.toString())
-                putExtra(ExtraNames.EXTRA_SEARCH_ACTOR, editActorName.text.toString())
-                putExtra(ExtraNames.EXTRA_SEARCH_DIRECTOR, ediDirectorName.text.toString())
+                putIntegerArrayListExtra(ExtraNames.EXTRA_SEARCH_ACTORS, searchActorsIds as? ArrayList)
+                putIntegerArrayListExtra(ExtraNames.EXTRA_SEARCH_CREW_MEMBERS, searchCrewMembersIds as? ArrayList)
                 putExtra(ExtraNames.EXTRA_SEARCH_SHOW_ADULT, showAdultCheckbox.isChecked)
-                putStringArrayListExtra(ExtraNames.EXTRA_SEARCH_GENRES, ArrayList<String>())
                 startActivity(this)
             }
+        }
+        clearAllFields.setOnClickListener {
+            searchYear = null
+            searchGenres = listOf()
+            personsSearchPage = null
+            searchCrewMembersIds = listOf()
+            searchActorsIds = listOf()
+            editTitle.text.clear()
+            showAdultCheckbox.isChecked = false
+            initUi()
         }
     }
 
@@ -69,7 +73,7 @@ class SearchActivity : BaseActivity() {
             val apiResponse = withContext(Dispatchers.IO) {
                 moviesApiService.getMoviesGenres()
             }
-            Hawk.put(PreferenceData.MOVIES_GENRES, apiResponse.genres)
+            saveGenresList(apiResponse.genres)
             initGenresSpinner()
         }
     }
@@ -79,7 +83,7 @@ class SearchActivity : BaseActivity() {
             val firstApiResponse = withContext(Dispatchers.IO) {
                 moviesApiService.getPopularPersons(null)
             }
-            Hawk.put(PreferenceData.POPULAR_PERSONS, firstApiResponse.results)
+            savePersonsList(firstApiResponse.results)
             val currentPage = firstApiResponse.page
             personsSearchPage = currentPage + 1
             val totalPages = firstApiResponse.total_pages
@@ -88,83 +92,105 @@ class SearchActivity : BaseActivity() {
                     val apiResponse = withContext(Dispatchers.IO) {
                         moviesApiService.getPopularPersons(personsSearchPage)
                     }
-                    val persons = Hawk.get<List<PersonInfo>>(PreferenceData.POPULAR_PERSONS).orEmpty().toMutableList()
+                    val persons = getPersonsList().toMutableList()
                     persons.addAll(apiResponse.results)
-                    Hawk.put(PreferenceData.POPULAR_PERSONS, persons)
+                    savePersonsList(persons)
                 }
             }
-            initPersonsSpinner()
+            initCrewMembersSpinner()
+            initActorsSpinner()
         }
     }
 
     private fun initYearAdapter() {
-        val years = ArrayList<Int>()
+        val yearsData = mutableListOf<KeyPairBoolData>()
         val thisYear: Int = Calendar.getInstance().get(Calendar.YEAR)
         for (i in thisYear downTo 1900) {
-            years.add(i)
+            val data = KeyPairBoolData()
+            data.id = i.toLong()
+            data.name = i.toString()
+            data.isSelected = false
+            yearsData.add(data)
         }
-        val adapter = ArrayAdapter<Int>(this, android.R.layout.simple_spinner_item, years)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        yearSpinner.adapter = adapter
-        yearSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
-
-            override fun onItemSelected(p: AdapterView<*>, view: View, position: Int, id: Long) {
-                searchYear = if (position != -1) years[position] else null
-                checkFilledFields()
-            }
+        yearSpinner.setItems(yearsData, -1) { items ->
+            searchYear = items.filter { it.isSelected }.map { it.id.toInt() }.firstOrNull()
+            checkFilledFields()
         }
     }
 
     private fun initGenresSpinner() {
-        val genres = Hawk.get<List<Genre>>(PreferenceData.MOVIES_GENRES).orEmpty()
-        val adapter =
-            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, genres.map { it.name })
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        genresSpinner.adapter = adapter
-        genresSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
-
-            override fun onItemSelected(p: AdapterView<*>, view: View, position: Int, id: Long) {
-                if (position != -1) {
-                    searchGenres.add(genres[position].id)
-                } else {
-                    searchGenres.clear()
-                }
-                checkFilledFields()
-            }
+        val genresData = mutableListOf<KeyPairBoolData>()
+        val genres = getGenresList()
+        for (i in genres.indices) {
+            val data = KeyPairBoolData()
+            data.id = genres[i].id.toLong()
+            data.name = genres[i].name
+            data.isSelected = false
+            genresData.add(data)
+        }
+        genresSpinner.setEmptyTitle(getString(R.string.no_data_found))
+        genresSpinner.setSearchHint(getString(R.string.find_genre))
+        genresSpinner.setItems(genresData, -1) { items ->
+            searchGenres = items.filter { it.isSelected }.map { it.id.toInt() }
+            checkFilledFields()
         }
     }
 
-    private fun initPersonsSpinner() {
-        val persons = Hawk.get<List<PersonInfo>>(PreferenceData.POPULAR_PERSONS).orEmpty()
-        val adapter =
-            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, persons.map { it.name })
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        personsSpinner.adapter = adapter
-        personsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
+    private fun preparePersonsSpinnerData(): MutableList<KeyPairBoolData> {
+        val personsData = mutableListOf<KeyPairBoolData>()
+        val persons = getPersonsList()
+        for (i in persons.indices) {
+            val data = KeyPairBoolData()
+            data.id = persons[i].id.toLong()
+            data.name = persons[i].name
+            data.isSelected = false
+            personsData.add(data)
+        }
+        return personsData
+    }
 
-            override fun onItemSelected(p: AdapterView<*>, view: View, position: Int, id: Long) {
-                if (position != -1) {
-                    searchPersons.add(persons[position].id)
-                } else {
-                    searchPersons.clear()
-                }
-                checkFilledFields()
-            }
+    private fun initCrewMembersSpinner() {
+        crewMembersMultiSpinner.setEmptyTitle(getString(R.string.no_data_found))
+        crewMembersMultiSpinner.setSearchHint(getString(R.string.find_person))
+        val personsData = preparePersonsSpinnerData()
+        crewMembersMultiSpinner.setItems(personsData, -1) { items ->
+            searchCrewMembersIds = items.filter { it.isSelected }.map { it.id.toInt() }
+            checkFilledFields()
+        }
+    }
+
+    private fun initActorsSpinner() {
+        actorsMultiSpinner.setEmptyTitle(getString(R.string.no_data_found))
+        actorsMultiSpinner.setSearchHint(getString(R.string.find_person))
+        val personsData = preparePersonsSpinnerData()
+        actorsMultiSpinner.setItems(personsData, -1) { items ->
+            searchActorsIds = items.filter { it.isSelected }.map { it.id.toInt() }
+            checkFilledFields()
         }
     }
 
     private fun checkFilledFields() {
         val isSearchFieldsFilled = searchYear != null || editTitle.text.isNotEmpty() ||
-                editActorName.text.isNotEmpty() || ediDirectorName.text.isNotEmpty() ||
-                searchGenres.isNotEmpty()
+                searchGenres.isNotEmpty() || searchCrewMembersIds.isNotEmpty() ||
+                searchActorsIds.isNotEmpty()
         search.isClickable = isSearchFieldsFilled
         search.isEnabled = isSearchFieldsFilled
         search.alpha = if (isSearchFieldsFilled) 1f else 0.5f
+    }
+
+    private fun getGenresList(): List<Genre> {
+        return Hawk.get<List<Genre>>(PreferenceData.MOVIES_GENRES).orEmpty()
+    }
+
+    private fun saveGenresList(list: List<Genre>) {
+        Hawk.put(PreferenceData.MOVIES_GENRES, list)
+    }
+
+    private fun getPersonsList(): List<PersonInfo> {
+        return Hawk.get<List<PersonInfo>>(PreferenceData.POPULAR_PERSONS).orEmpty()
+    }
+
+    private fun savePersonsList(list: List<PersonInfo>) {
+        Hawk.put(PreferenceData.POPULAR_PERSONS, list)
     }
 }

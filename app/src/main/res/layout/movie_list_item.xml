@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="wrap_content"
+    android:minHeight="60dp"
     android:background="@android:color/white"
     android:orientation="horizontal"
     android:paddingStart="15dp"
@@ -12,7 +13,7 @@
     <ImageView
         android:id="@+id/movieLogo"
         android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_margin="5dp"
         android:paddingTop="5dp"
@@ -20,7 +21,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_launcher" />
+        tools:srcCompat="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/movieTitle"

@@ -41,6 +41,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
     implementation 'org.jetbrains.anko:anko:0.10.8'
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.github.ganfra:material-spinner:2.0.0'
-    implementation "com.orhanobut:hawk:2.0.1"
+    implementation 'com.orhanobut:hawk:2.0.1'
+    implementation 'com.github.pratikbutani:MultiSelectSpinner:-SNAPSHOT'
 }

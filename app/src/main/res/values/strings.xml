@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">MovieDbSearch</string>
-    <string name="empty_search_list_text">It\'s empty here,\n please try another search params\n or try again later</string>
+    <string name="empty_search_list_text">It\'s empty here,\n please try another search params\n and try again</string>
     <string name="error">Error</string>
     <string name="general_error_message">Sorry, something unexpected happened</string>
     <string name="find_your_favourite_movies">Find your favourite movies</string>
@@ -14,4 +14,13 @@
     <string name="open_in_browser">Open in browser</string>
     <string name="popularity">Popularity: %s</string>
     <string name="votes_count">Votes count: %s</string>
+    <string name="people_as_crew_members">People as crew members</string>
+    <string name="people_as_actors">People as actors</string>
+    <string name="no_data_found">No data found</string>
+    <string name="find_person">Find person</string>
+    <string name="movie_genre">Movie genre</string>
+    <string name="release_year">Release year</string>
+    <string name="find_genre">Find genre</string>
+    <string name="clear_all_fields">Clear all fields</string>
+    <string name="not_selected">Not selected</string>
 </resources>

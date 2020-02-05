@@ -24,9 +24,9 @@ class MoviesListActivity : BaseActivity() {
     private var pageToLoad: Int? = null
     private var searchYear: Int? = null
     private var searchTitle: String? = null
-    private var searchGenres: ArrayList<String>? = null
-    private var searcActorName: String? = null
-    private var searchDirectorName: String? = null
+    private var searchGenres: ArrayList<Int>? = null
+    private var searcActorIds: ArrayList<Int>? = null
+    private var searchCrewMembersIds: ArrayList<Int>? = null
     private var searchShowAdult: Boolean? = null
     private var canLoadMore = true
 
@@ -42,9 +42,9 @@ class MoviesListActivity : BaseActivity() {
     private fun initSearchParams() {
         searchYear = intent?.getIntExtra(ExtraNames.EXTRA_SEARCH_YEAR, 0)
         searchTitle = intent?.getStringExtra(ExtraNames.EXTRA_SEARCH_TITLE)
-        searchGenres = intent?.getStringArrayListExtra(ExtraNames.EXTRA_SEARCH_GENRES)
-        searcActorName = intent?.getStringExtra(ExtraNames.EXTRA_SEARCH_ACTOR)
-        searchDirectorName = intent?.getStringExtra(ExtraNames.EXTRA_SEARCH_DIRECTOR)
+        searchGenres = intent?.getIntegerArrayListExtra(ExtraNames.EXTRA_SEARCH_GENRES)
+        searcActorIds = intent?.getIntegerArrayListExtra(ExtraNames.EXTRA_SEARCH_ACTORS)
+        searchCrewMembersIds = intent?.getIntegerArrayListExtra(ExtraNames.EXTRA_SEARCH_CREW_MEMBERS)
         searchShowAdult = intent?.getBooleanExtra(ExtraNames.EXTRA_SEARCH_SHOW_ADULT, false)
     }
 
@@ -59,9 +59,9 @@ class MoviesListActivity : BaseActivity() {
                     pageToLoad,
                     if (searchYear != 0) searchYear else null,
                     if (!title.isNullOrEmpty()) "original_title.desc" else null,
-                    if (!searchGenres.isNullOrEmpty()) searchGenres!!.joinToString(",") else null,
-                    null,
-                    null,
+                    getRequestStringFromList(searchGenres),
+                    getRequestStringFromList(searcActorIds),
+                    getRequestStringFromList(searchCrewMembersIds),
                     searchShowAdult
                 )
             }
@@ -71,6 +71,10 @@ class MoviesListActivity : BaseActivity() {
             if (initialLoading) hideLoader()
             else loadMoreProgressBar.beGone()
         }
+    }
+
+    private fun getRequestStringFromList(dataList: ArrayList<Int>?): String? {
+        return if (!dataList.isNullOrEmpty()) dataList.joinToString(",") else null
     }
 
     private fun initListeners() {
@@ -93,7 +97,10 @@ class MoviesListActivity : BaseActivity() {
         val list = if (searchTitle.isNullOrEmpty()) {
             response.results
         } else {
-            response.results.filter { it.title.toLowerCase().contains(searchTitle!!.toLowerCase()) }
+            response.results.filter {
+                it.title.toLowerCase().contains(searchTitle!!.toLowerCase()) ||
+                        it.original_title.toLowerCase().contains(searchTitle!!.toLowerCase())
+            }
         }
         val diffUtilCallback =
             MoviesDiffUtilCallback(

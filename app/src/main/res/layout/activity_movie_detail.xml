@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,138 +7,143 @@
     android:background="@color/grey"
     tools:context=".screens.details.MovieDetailActivity">
 
-    <ImageView
-        android:id="@+id/movieBgPoster"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_height="wrap_content">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:background="@color/purple"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/movieBgPoster"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
-    <ImageView
-        android:id="@+id/moviePoster"
-        android:layout_width="150dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center"
-        app:layout_constraintBottom_toBottomOf="@+id/movieBgPoster"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/colorPrimary" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:background="@color/purple"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/movieTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="170dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:layout_marginTop="20dp"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/moviePoster"
-        app:layout_constraintTop_toTopOf="@+id/moviePoster"
-        tools:text="Title" />
+        <ImageView
+            android:id="@+id/moviePoster"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/movieBgPoster"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/colorPrimary" />
 
-    <TextView
-        android:id="@+id/year"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@+id/movieTitle"
-        app:layout_constraintTop_toBottomOf="@+id/movieTitle"
-        tools:text="(2020)" />
+        <TextView
+            android:id="@+id/movieTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="170dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/moviePoster"
+            app:layout_constraintTop_toTopOf="@+id/moviePoster"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="Title" />
 
-    <TextView
-        android:id="@+id/votesCountHint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="16sp"
-        android:textColor="@color/white"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="@+id/year"
-        app:layout_constraintTop_toBottomOf="@+id/year"
-        android:text="@string/votes_count" />
+        <TextView
+            android:id="@+id/year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/movieTitle"
+            app:layout_constraintTop_toBottomOf="@+id/movieTitle"
+            tools:text="(2020)" />
 
-    <RatingBar
-        android:id="@+id/voteRating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:numStars="10"
-        android:stepSize="0.1"
-        style="?android:attr/ratingBarStyleSmall"
-        app:layout_constraintStart_toStartOf="@+id/votesCountHint"
-        app:layout_constraintTop_toBottomOf="@+id/votesCountHint"
-        />
+        <TextView
+            android:id="@+id/votesCountHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="@string/votes_count"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/year"
+            app:layout_constraintTop_toBottomOf="@+id/year" />
 
-    <TextView
-        android:id="@+id/popularity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="@+id/year"
-        app:layout_constraintTop_toBottomOf="@+id/voteRating"
-        tools:text="popularity: 1" />
+        <RatingBar
+            android:id="@+id/voteRating"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="10"
+            android:stepSize="0.1"
+            app:layout_constraintStart_toStartOf="@+id/votesCountHint"
+            app:layout_constraintTop_toBottomOf="@+id/votesCountHint" />
 
-    <TextView
-        android:id="@+id/overviewHint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/movieBgPoster"
-        android:text="@string/overview" />
+        <TextView
+            android:id="@+id/popularity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/year"
+            app:layout_constraintTop_toBottomOf="@+id/voteRating"
+            tools:text="popularity: 1" />
 
-    <TextView
-        android:id="@+id/overview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="20dp"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/overviewHint"
-        app:layout_constraintTop_toBottomOf="@+id/overviewHint"
-        tools:text="overview some text" />
+        <TextView
+            android:id="@+id/overviewHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/overview"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movieBgPoster" />
 
-    <TextView
-        android:id="@+id/openInWeb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_rectangle_green"
-        android:text="@string/open_in_browser"
-        android:textAllCaps="true"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/movieBgPoster" />
+        <TextView
+            android:id="@+id/overview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/overviewHint"
+            app:layout_constraintTop_toBottomOf="@+id/overviewHint"
+            tools:text="overview some text" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/openInWeb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_rectangle_green"
+            android:text="@string/open_in_browser"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/overview" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
