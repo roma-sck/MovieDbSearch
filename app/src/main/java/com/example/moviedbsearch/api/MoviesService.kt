@@ -7,15 +7,15 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface MoviesService {
-    @GET("genre/movie/list?api_key=${ApiConstants.THE_MOVIES_DB_API_KEY}&language=en-US")
+    @GET("genre/movie/list")
     suspend fun getMoviesGenres(): GenresResponse
 
-    @GET("person/popular?api_key=${ApiConstants.THE_MOVIES_DB_API_KEY}&language=en-US")
+    @GET("person/popular")
     suspend fun getPopularPersons(
         @Query("page") page: Int? = null
     ): PopularPersonsResponse
 
-    @GET("discover/movie?api_key=${ApiConstants.THE_MOVIES_DB_API_KEY}")
+    @GET("discover/movie")
     suspend fun getMovies(
         @Query("page") page: Int? = null,
         @Query("year") year: Int? = null,

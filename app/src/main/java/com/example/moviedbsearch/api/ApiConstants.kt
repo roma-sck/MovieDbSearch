@@ -1,7 +1,9 @@
 package com.example.moviedbsearch.api
 
+import com.example.moviedbsearch.BuildConfig
+
 object ApiConstants {
-    internal const val THE_MOVIES_DB_API_KEY = "8123971648da4ff0ca36b9fed8f72ebd"
+    internal const val THE_MOVIES_DB_API_KEY = BuildConfig.MOVIE_DB_API_KEY
     internal const val THE_MOVIES_DB_BASE_URL = "https://api.themoviedb.org/3/"
     private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/"
     private const val IMAGE_SIZE_DEFAULT = "w500/"

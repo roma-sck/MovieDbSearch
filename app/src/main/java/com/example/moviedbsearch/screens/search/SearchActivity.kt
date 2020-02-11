@@ -98,7 +98,7 @@ class SearchActivity : BaseActivity() {
             if (totalPages > currentPage) {
                 for (page in (currentPage + 1)..(if (totalPages <= 10) totalPages else 10)) {
                     val apiResponse = withContext(Dispatchers.IO) {
-                        moviesApiService.getPopularPersons(personsSearchPage)
+                        moviesApiService.getPopularPersons(page)
                     }
                     val persons = getPersonsList().toMutableList()
                     persons.addAll(apiResponse.results)
