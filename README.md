@@ -8,4 +8,6 @@ This api requires an api key to make requests:
 3) Add your key in local.properties present in root folder
 movie_db_api_key = "xxxxxxxxxxxxxxxxxxxxxxxxxx"
 
+![alt tag](screenshots/moviesearch_screenshot.png)
+
 
